@@ -51,13 +51,20 @@ def init_db():
         load_mock_db()
     else:
         try:
-            connect(host=mongo_uri, serverSelectionTimeoutMS=4000)
-            print("Connected to MongoDB Atlas")
+            conn = connect(host=mongo_uri, serverSelectionTimeoutMS=2500)
+            conn.admin.command('ping')
+            print("Connected to MongoDB Atlas successfully.")
         except Exception as e:
-            print(f"Warning: Failed to connect to MongoDB Atlas ({e}). Falling back to in-memory mongomock.")
+            print(f"Warning: MongoDB Atlas unreachable or SSL handshake failed ({e}). Falling back to local persistent mock database.")
+            try:
+                from mongoengine.connection import disconnect
+                disconnect()
+            except Exception:
+                pass
             try:
                 import mongomock
                 connect('disease_prediction', host='localhost', mongo_client_class=mongomock.MongoClient)
                 load_mock_db()
+                print("Local mock database activated with existing user accounts.")
             except Exception as e2:
-                print(f"Fallback error: {e2}")
+                print(f"Mock DB activation failed: {e2}")
