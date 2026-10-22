@@ -7,7 +7,11 @@ from routes.auth_routes import auth_bp, bcrypt
 from routes.prediction_routes import prediction_bp
 from flask_login import current_user, login_required
 
-app = Flask(__name__)
+base_dir = os.path.dirname(os.path.abspath(__file__))
+template_dir = os.path.join(base_dir, 'templates')
+static_dir = os.path.join(base_dir, 'static')
+
+app = Flask(__name__, template_folder=template_dir, static_folder=static_dir)
 
 # Config
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'supersecretkey123')

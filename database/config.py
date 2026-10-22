@@ -50,5 +50,14 @@ def init_db():
         connect('disease_prediction', host='localhost', mongo_client_class=mongomock.MongoClient)
         load_mock_db()
     else:
-        connect(host=mongo_uri)
-        print("Connected to MongoDB Atlas")
+        try:
+            connect(host=mongo_uri, serverSelectionTimeoutMS=4000)
+            print("Connected to MongoDB Atlas")
+        except Exception as e:
+            print(f"Warning: Failed to connect to MongoDB Atlas ({e}). Falling back to in-memory mongomock.")
+            try:
+                import mongomock
+                connect('disease_prediction', host='localhost', mongo_client_class=mongomock.MongoClient)
+                load_mock_db()
+            except Exception as e2:
+                print(f"Fallback error: {e2}")
