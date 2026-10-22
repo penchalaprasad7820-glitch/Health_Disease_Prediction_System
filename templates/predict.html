@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-sm animate-fade-up">
+            <div class="card-body p-5">
+                <h2 class="text-center mb-4">New Disease Prediction</h2>
+                <div id="alert-container"></div>
+                <form id="predict-form">
+                    <h4 class="mb-3">Patient Info</h4>
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label for="patient_name" class="form-label">Patient Name</label>
+                            <input type="text" class="form-control" id="patient_name" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="age" class="form-label">Age</label>
+                            <input type="number" class="form-control" id="age" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="gender" class="form-label">Gender</label>
+                            <select class="form-select" id="gender">
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <h4 class="mb-3 mt-4">Vitals & Labs</h4>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="blood_pressure" class="form-label">Blood Pressure (Systolic)</label>
+                            <input type="number" class="form-control" id="blood_pressure" value="120" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="cholesterol" class="form-label">Cholesterol (mg/dL)</label>
+                            <input type="number" class="form-control" id="cholesterol" value="200" required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="glucose" class="form-label">Glucose (mg/dL)</label>
+                            <input type="number" class="form-control" id="glucose" value="100" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="bmi" class="form-label">BMI</label>
+                            <input type="number" step="0.1" class="form-control" id="bmi" value="25.0" required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label for="tumor_size" class="form-label">Tumor Size (cm)</label>
+                            <input type="number" step="0.1" class="form-control" id="tumor_size" value="2.0" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="bilirubin" class="form-label">Bilirubin (mg/dL)</label>
+                            <input type="number" step="0.1" class="form-control" id="bilirubin" value="1.0" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="alkaline_phosphatase" class="form-label">Alk. Phosphatase (U/L)</label>
+                            <input type="number" step="1" class="form-control" id="alkaline_phosphatase" value="100" required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="blood_urea" class="form-label">Blood Urea (mg/dL)</label>
+                            <input type="number" step="0.1" class="form-control" id="blood_urea" value="30.0" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="serum_creatinine" class="form-label">Serum Creatinine (mg/dL)</label>
+                            <input type="number" step="0.1" class="form-control" id="serum_creatinine" value="1.0" required>
+                        </div>
+                    </div>
+                    
+                    <h4 class="mb-3 mt-4">Symptoms</h4>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <div class="form-check form-check-inline"><input class="form-check-input sym-cb" type="checkbox" value="fever" id="sym1"><label class="form-check-label" for="sym1">Fever</label></div>
+                            <div class="form-check form-check-inline"><input class="form-check-input sym-cb" type="checkbox" value="cough" id="sym2"><label class="form-check-label" for="sym2">Cough</label></div>
+                            <div class="form-check form-check-inline"><input class="form-check-input sym-cb" type="checkbox" value="fatigue" id="sym3"><label class="form-check-label" for="sym3">Fatigue</label></div>
+                            <div class="form-check form-check-inline"><input class="form-check-input sym-cb" type="checkbox" value="difficulty_breathing" id="sym4"><label class="form-check-label" for="sym4">Difficulty Breathing</label></div>
+                            <div class="form-check form-check-inline"><input class="form-check-input sym-cb" type="checkbox" value="chest_pain" id="sym5"><label class="form-check-label" for="sym5">Chest Pain</label></div>
+                            <div class="form-check form-check-inline"><input class="form-check-input sym-cb" type="checkbox" value="dizziness" id="sym6"><label class="form-check-label" for="sym6">Dizziness</label></div>
+                            <div class="form-check form-check-inline"><input class="form-check-input sym-cb" type="checkbox" value="nausea" id="sym7"><label class="form-check-label" for="sym7">Nausea</label></div>
+                            <div class="form-check form-check-inline"><input class="form-check-input sym-cb" type="checkbox" value="frequent_urination" id="sym8"><label class="form-check-label" for="sym8">Frequent Urination</label></div>
+                            <div class="form-check form-check-inline"><input class="form-check-input sym-cb" type="checkbox" value="excessive_thirst" id="sym9"><label class="form-check-label" for="sym9">Excessive Thirst</label></div>
+                            <div class="form-check form-check-inline"><input class="form-check-input sym-cb" type="checkbox" value="lump_in_breast" id="sym10"><label class="form-check-label" for="sym10">Lump in Breast</label></div>
+                            <div class="form-check form-check-inline"><input class="form-check-input sym-cb" type="checkbox" value="jaundice" id="sym11"><label class="form-check-label" for="sym11">Jaundice</label></div>
+                            <div class="form-check form-check-inline"><input class="form-check-input sym-cb" type="checkbox" value="swelling_in_legs" id="sym12"><label class="form-check-label" for="sym12">Swelling in Legs</label></div>
+                            <div class="form-check form-check-inline"><input class="form-check-input sym-cb" type="checkbox" value="itching" id="sym13"><label class="form-check-label" for="sym13">Itching</label></div>
+                        </div>
+                    </div>
+                    
+                    <h4 class="mb-3 mt-4 d-flex align-items-center gap-2">
+                        <i class="bi bi-file-earmark-medical-fill text-primary"></i> Medical Reports & Clinical Notes
+                    </h4>
+                    <p class="text-muted small mb-3">Attach relevant lab reports, scan documents, or doctor's clinical observations for this patient.</p>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6 mb-3 mb-md-0">
+                            <label for="medical_report_type" class="form-label">Report Category</label>
+                            <select class="form-select" id="medical_report_type">
+                                <option value="Comprehensive Lab Panel">Comprehensive Lab Panel</option>
+                                <option value="Blood Test / CBC Panel">Blood Test / CBC Panel</option>
+                                <option value="Radiology & Imaging (X-Ray, CT, MRI)">Radiology & Imaging (X-Ray, CT, MRI)</option>
+                                <option value="Cardiology & ECG Report">Cardiology & ECG Report</option>
+                                <option value="Pathology & Biopsy">Pathology & Biopsy</option>
+                                <option value="Clinical Summary / Prescription">Clinical Summary / Prescription</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="medical_report_file" class="form-label">Upload Medical Report (PDF / Image / Doc)</label>
+                            <input class="form-control" type="file" id="medical_report_file" accept=".pdf,.png,.jpg,.jpeg,.doc,.docx,.txt">
+                            <div class="form-text small text-muted">Supports PDF, PNG, JPG, DOCX (Max 15MB)</div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="medical_report_notes" class="form-label">Clinical Observations & Report Findings</label>
+                            <textarea class="form-control" id="medical_report_notes" rows="3" placeholder="Enter physician notes, lab remarks, known allergies, or clinical observations..."></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg" id="predict-btn">
+                            <i class="bi bi-cpu-fill me-2"></i>Analyze & Predict Disease
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

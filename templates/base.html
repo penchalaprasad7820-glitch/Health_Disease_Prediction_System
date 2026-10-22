@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }} - Disease Prediction System</title>
+    <meta name="description" content="An advanced disease prediction and decision-support system.">
+    <!-- Immediate Theme Application (prevents theme flash on reload) -->
+    <script>
+        (function() {
+            var theme = localStorage.getItem('medipredict_theme') || 'oceanic-dark';
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="bg-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+    </div>
+    <nav class="navbar navbar-expand-lg glass-nav fixed-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="{{ url_for('index') }}">
+                <i class="bi bi-heart-pulse-fill me-2"></i>MediPredict AI
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbar">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
+                    {% if current_user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('dashboard') }}">Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('predict_page') }}">New Prediction</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('auth.logout') }}">Logout ({{ current_user.username }})</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('login_page') }}">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('register') }}">Register</a>
+                        </li>
+                    {% endif %}
+                    
+                    <!-- Theme Selector UI -->
+                    <li class="nav-item ms-lg-3 mt-2 mt-lg-0">
+                        <div class="theme-btn-group">
+                            <button type="button" class="btn-theme-quick" id="quickThemeToggle" title="Toggle Light / Dark mode" aria-label="Toggle light / dark mode">
+                                <i class="bi bi-sun-fill" id="quickThemeIcon"></i>
+                            </button>
+                            <div class="dropdown d-inline-block">
+                                <button type="button" class="btn-theme-dropdown dropdown-toggle dropdown-toggle-split" id="themeDropdown" data-bs-toggle="dropdown" aria-expanded="false" title="Select custom healthcare theme" aria-label="Select theme">
+                                    <span class="visually-hidden">Theme list</span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end theme-dropdown-menu shadow-lg" aria-labelledby="themeDropdown">
+                                    <li class="dropdown-header text-uppercase fw-bold">Select Interface Theme</li>
+                                    <li>
+                                        <button class="dropdown-item d-flex align-items-center gap-2 theme-select-btn" data-theme-value="oceanic-dark">
+                                            <span class="theme-swatch swatch-oceanic"></span>
+                                            <div class="d-flex flex-column">
+                                                <span class="fw-semibold">Oceanic Dark</span>
+                                                <small class="text-muted">High-tech clinical navy</small>
+                                            </div>
+                                            <i class="bi bi-check-lg ms-auto theme-check-icon d-none"></i>
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button class="dropdown-item d-flex align-items-center gap-2 theme-select-btn" data-theme-value="clinical-light">
+                                            <span class="theme-swatch swatch-light"></span>
+                                            <div class="d-flex flex-column">
+                                                <span class="fw-semibold">Clinical Light</span>
+                                                <small class="text-muted">Crisp medical slate</small>
+                                            </div>
+                                            <i class="bi bi-check-lg ms-auto theme-check-icon d-none"></i>
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button class="dropdown-item d-flex align-items-center gap-2 theme-select-btn" data-theme-value="emerald-vitality">
+                                            <span class="theme-swatch swatch-emerald"></span>
+                                            <div class="d-flex flex-column">
+                                                <span class="fw-semibold">Emerald Vitality</span>
+                                                <small class="text-muted">Deep forest wellness</small>
+                                            </div>
+                                            <i class="bi bi-check-lg ms-auto theme-check-icon d-none"></i>
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button class="dropdown-item d-flex align-items-center gap-2 theme-select-btn" data-theme-value="midnight-obsidian">
+                                            <span class="theme-swatch swatch-obsidian"></span>
+                                            <div class="d-flex flex-column">
+                                                <span class="fw-semibold">Midnight Obsidian</span>
+                                                <small class="text-muted">Minimalist dark carbon</small>
+                                            </div>
+                                            <i class="bi bi-check-lg ms-auto theme-check-icon d-none"></i>
+                                        </button>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mt-5 pt-5 pb-5">
+        <div class="row">
+            <div class="col-md-12">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+            </div>
+        </div>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer mt-auto py-3 text-center">
+        <div class="container">
+            <span class="text-muted small">© 2026 MediPredict AI. Advanced Clinical Decision Support. All rights reserved.</span>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
