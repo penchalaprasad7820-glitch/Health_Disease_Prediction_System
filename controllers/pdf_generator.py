@@ -6,7 +6,10 @@ import os
 from datetime import datetime
 
 def generate_pdf_report(prediction_history, results, shap_image_path, lime_image_path=None):
-    reports_dir = os.path.join('static', 'reports')
+    if os.environ.get('VERCEL'):
+        reports_dir = os.path.join('/tmp', 'reports')
+    else:
+        reports_dir = os.path.join('static', 'reports')
     os.makedirs(reports_dir, exist_ok=True)
     
     filename = f"report_{prediction_history.id}_{datetime.now().strftime('%Y%m%d%H%M%S')}.pdf"

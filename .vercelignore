@@ -1,0 +1,40 @@
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+
+# Version control
+.git/
+.gitignore
+
+# Python caches
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Development and tests
+tests/
+test_*.py
+requirements-full.txt
+requirements-dev.txt
+
+# Datasets and training scripts
+data/
+*.csv
+ml_prediction/train.py
+ml_prediction/train_model.py
+ml_prediction/mock_train.py
+
+# Local databases and instances
+instance/
+mock_db.json
+
+# Docker & other deployment files
+Dockerfile
+.dockerignore
+render.yaml
+Procfile
+DEPLOYMENT.md
+README.md

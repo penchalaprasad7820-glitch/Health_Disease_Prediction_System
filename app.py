@@ -29,6 +29,21 @@ def fromjson_filter(value):
     except:
         return {}
 
+# Vercel Serverless ephemeral file serving (/tmp)
+if os.environ.get('VERCEL'):
+    from flask import send_from_directory
+    @app.route('/static/shap/<path:filename>')
+    def serve_tmp_shap(filename):
+        return send_from_directory('/tmp/shap', filename)
+
+    @app.route('/static/lime/<path:filename>')
+    def serve_tmp_lime(filename):
+        return send_from_directory('/tmp/lime', filename)
+
+    @app.route('/static/reports/<path:filename>')
+    def serve_tmp_reports(filename):
+        return send_from_directory('/tmp/reports', filename)
+
 # ----------------- UI ROUTES -----------------
 @app.route('/')
 def index():

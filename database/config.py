@@ -14,15 +14,20 @@ def dump_mock_db():
         # mongomock might not support list_collection_names perfectly, so we use known collections
         for coll_name in ['users', 'prediction_history']:
             data[coll_name] = list(db[coll_name].find())
-        with open('mock_db.json', 'w') as f:
+        target_path = '/tmp/mock_db.json' if os.environ.get('VERCEL') else 'mock_db.json'
+        with open(target_path, 'w') as f:
             f.write(dumps(data))
     except Exception as e:
         pass
 
 def load_mock_db():
     try:
-        if os.path.exists('mock_db.json'):
-            with open('mock_db.json', 'r') as f:
+        target_path = '/tmp/mock_db.json' if os.environ.get('VERCEL') else 'mock_db.json'
+        if not os.path.exists(target_path) and os.path.exists('mock_db.json'):
+            target_path = 'mock_db.json'
+            
+        if os.path.exists(target_path):
+            with open(target_path, 'r') as f:
                 data = loads(f.read())
             db = get_db()
             for coll_name, docs in data.items():

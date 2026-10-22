@@ -7,6 +7,19 @@ from ml_prediction.prediction import predict_disease
 from controllers.pdf_generator import generate_pdf_report
 from database.config import dump_mock_db
 
+def format_media_url(file_path):
+    if not file_path:
+        return None
+    normalized = file_path.replace('\\', '/')
+    if os.environ.get('VERCEL'):
+        if '/tmp/shap/' in normalized:
+            return f"static/shap/{os.path.basename(normalized)}"
+        if '/tmp/lime/' in normalized:
+            return f"static/lime/{os.path.basename(normalized)}"
+        if '/tmp/reports/' in normalized:
+            return f"static/reports/{os.path.basename(normalized)}"
+    return normalized
+
 prediction_bp = Blueprint('prediction', __name__)
 
 @prediction_bp.route('/predict', methods=['POST'])
@@ -42,7 +55,10 @@ def predict():
             if 'medical_report_file' in request.files:
                 file = request.files['medical_report_file']
                 if file and file.filename != '':
-                    upload_dir = os.path.join('static', 'reports', 'uploaded')
+                    if os.environ.get('VERCEL'):
+                        upload_dir = os.path.join('/tmp', 'reports', 'uploaded')
+                    else:
+                        upload_dir = os.path.join('static', 'reports', 'uploaded')
                     os.makedirs(upload_dir, exist_ok=True)
                     from werkzeug.utils import secure_filename
                     import uuid
@@ -115,12 +131,12 @@ def predict():
             "id": str(history.id),
             "results": results,
             "explanation": explanation,
-            "shap_image_path": shap_path.replace('\\', '/') if shap_path else None,
-            "lime_image_path": lime_path.replace('\\', '/') if lime_path else None,
+            "shap_image_path": format_media_url(shap_path),
+            "lime_image_path": format_media_url(lime_path),
             "lime_rules": lime_rules,
             "shap_top_features": shap_features,
-            "pdf_report_path": pdf_path.replace('\\', '/') if pdf_path else None,
-            "medical_report_file": uploaded_file_path.replace('\\', '/') if uploaded_file_path else None,
+            "pdf_report_path": format_media_url(pdf_path),
+            "medical_report_file": format_media_url(uploaded_file_path),
             "medical_report_type": medical_report_type,
             "medical_report_notes": medical_report_notes
         }
@@ -203,8 +219,8 @@ def get_single_history(history_id):
         "medical_report_notes": getattr(h, 'medical_report_notes', None),
         "explanations": {
             "text": explanation_text,
-            "shap_image": h.explanations.shap_image_path.replace('\\', '/') if h.explanations and h.explanations.shap_image_path else None,
-            "lime_image": getattr(h.explanations, 'lime_image_path', '').replace('\\', '/') if h.explanations and getattr(h.explanations, 'lime_image_path', None) else None,
+            "shap_image": format_media_url(h.explanations.shap_image_path) if h.explanations else None,
+            "lime_image": format_media_url(getattr(h.explanations, 'lime_image_path', None)) if h.explanations else None,
             "lime_rules": getattr(h.explanations, 'lime_rules', []) if h.explanations else [],
             "shap_features": getattr(h.explanations, 'shap_top_features', []) if h.explanations else []
         }
